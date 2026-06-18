@@ -2,7 +2,7 @@
 ## Provenance Attestation and Chain of Trust
 
 **Version 1.0 — June 2026**  
-**protocol@pbmlabs.com**
+**protocol@pbm-labs.com**
 
 ---
 
@@ -196,4 +196,4 @@ The protocol is designed to evolve toward permissionless node operation. The ini
 
 *PACT — Provenance Attestation and Chain of Trust*  
 *Whitepaper v1.0 — June 2026*  
-*protocol@pbmlabs.com*
+*protocol@pbm-labs.com*
