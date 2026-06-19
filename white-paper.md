@@ -84,6 +84,16 @@ The trust score for a domain is the product of three factors:
 
 The maturity factor is the most consequential defense. Lookalike domains and synthetic entities face an insurmountable time gap versus the domains they attempt to impersonate. The global mail infrastructure has been certifying `wise.com` for years. No attacker can replicate that accumulation.
 
+### 3.4 Maturity Is Not the Whole Story
+
+A pure maturity-weighted score penalizes legitimate new entities by construction. A well-funded startup three months old will score below an inactive small business with a ten-year-old domain, even though the startup is unambiguously more legitimate in any practical sense. If PACT is consumed as a single number, this is a real distortion — not a cosmetic one.
+
+The distortion exists because maturity collapses two distinct questions into one score: *has this domain existed long enough that its history could not have been fabricated* and *is this domain's current activity consistent with legitimate operation*. These are different questions with different answers for different entities.
+
+PACT addresses this by exposing velocity as an independent signal alongside maturity, rather than fusing both into a single opaque number. Velocity measures whether a domain's growth in volume and receiver diversity is gradual and broadly distributed — consistent with organic adoption — or sudden and concentrated, consistent with artificially manufactured traffic. A new domain with high volume, high diversity, and gradual, multi-receiver velocity is a different signal than a new domain with an abrupt, narrow spike in traffic from a small set of receivers. The first is consistent with a real, fast-growing institution. The second is consistent with manufactured history.
+
+Applications consuming PACT are expected to read maturity and velocity together, not maturity alone. A young domain with strong velocity and strong diversity should not be treated identically to a young domain with neither. The protocol exposes both signals; it does not collapse them into a verdict.
+
 ### 3.3 Thresholds Are Policy, Not Protocol
 
 PACT produces a measurement. Applications consuming the score define their own acceptance thresholds based on their risk tolerance and use case. The protocol enforces no threshold. This separation of measurement from policy is deliberate — it allows the same underlying trust score to serve a bank's onboarding workflow, a procurement platform's vendor screening, and an automated decision system's counterparty evaluation, each with appropriate calibration.
@@ -129,6 +139,18 @@ PACT packages that consensus into an immutable on-chain record.
 To achieve a high trust score through illegitimate means, an attacker would need to send authenticated email at institutional volume, consistently, over years, from infrastructure that passes the spam and abuse filters of every major mail provider globally, to recipients spread across hundreds of independent receiver domains — and maintain this without interruption long enough for the maturity factor to accumulate.
 
 That is not an attack. That is legitimate operation. The economic cost of the attack equals the economic cost of being a real institution. PACT's Sybil resistance is not enforced by a gatekeeper — it is enforced by the economics of the global email infrastructure itself.
+
+### 5.3 Inherited Trust Is Not Permanent Trust
+
+Proof of Operational Work defends against an attacker building fraudulent history from zero. It does not, by itself, defend against an attacker who seizes control of a domain that already has accumulated history — through DNS compromise, registrar account takeover, or any other mechanism that transfers control of the domain's infrastructure to an unauthorized party.
+
+This is a meaningful distinction. A domain hijacker who gains control of `wise.com`'s DNS does not need to build trust — they inherit it. The protocol's default assumption, that current control of a domain's DNS implies legitimate continuity with its past, is true in the overwhelming majority of cases and false in exactly the cases that matter most.
+
+PACT addresses this by treating the trust score as continuously re-evaluated, not retroactively fixed. PACT Signal monitors each connected domain's sending infrastructure — IP ranges, DKIM selectors, receiver distribution — against its established baseline. A domain hijacking event almost always produces an observable infrastructure discontinuity: new selectors, unfamiliar sending ranges, or a receiver distribution inconsistent with the domain's history, often appearing abruptly rather than gradually.
+
+When such a discontinuity is detected, the trust score does not continue to reflect the pre-existing history unconditionally. It is provisionally discounted until the new infrastructure pattern either stabilizes into a consistent, sustained baseline or is confirmed by the domain operator as an intentional, authorized change. Accumulated history establishes a prior. It does not grant indefinite, unconditional inheritance of trust independent of what the domain's infrastructure is doing today.
+
+This does not eliminate the risk entirely — no system that relies on DNS as its root of authority can. It ensures that hijacking a high-trust domain produces a visible signal rather than a silent, permanent transfer of reputation.
 
 ---
 
@@ -189,6 +211,8 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 PACT Protocol is at the specification and early build stage. The protocol specification is open and freely available. Third-party implementations are encouraged.
 
 The reference implementation is in active development. The MVP milestone is a live public domain provenance page — trust score, authentication history, and independently verifiable Merkle proof — backed by real DMARC aggregate reports anchored on a public blockchain.
+
+Early adoption is expected to concentrate among domains with a specific, immediate incentive to be independently verifiable — entities operating under regulatory scrutiny, compliance-sensitive vendors, and organizations seeking to differentiate themselves from less established competitors. Broad adoption by default-trusted institutions follows once the protocol's verification value is established by precedent, not before.
 
 The protocol is designed to evolve toward permissionless node operation. The initial reference implementation operates a single node; the architecture supports and anticipates multiple independent nodes. The on-chain verification function ensures that the correctness of any published root is independently verifiable regardless of who operates the publishing infrastructure.
 
