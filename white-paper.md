@@ -84,7 +84,7 @@ The trust score for a domain is the product of three factors:
 
 The maturity factor is the most consequential defense. Lookalike domains and synthetic entities face an insurmountable time gap versus the domains they attempt to impersonate. The global mail infrastructure has been certifying `wise.com` for years. No attacker can replicate that accumulation.
 
-### 3.4 Maturity Is Not the Whole Story
+### 3.3 Maturity Is Not the Whole Story
 
 A pure maturity-weighted score penalizes legitimate new entities by construction. A well-funded startup three months old will score below an inactive small business with a ten-year-old domain, even though the startup is unambiguously more legitimate in any practical sense. If PACT is consumed as a single number, this is a real distortion — not a cosmetic one.
 
@@ -94,7 +94,7 @@ The protocol's design addresses this by planning to expose velocity as an indepe
 
 Once shipped, applications consuming PACT should read maturity and velocity together, not maturity alone — a young domain with strong velocity and strong diversity should not be treated identically to a young domain with neither. Velocity is on the near-term roadmap (Section 8) and is not yet part of the live score; today's score is volume, diversity, and maturity only.
 
-### 3.3 Thresholds Are Policy, Not Protocol
+### 3.4 Thresholds Are Policy, Not Protocol
 
 PACT produces a measurement. Applications consuming the score define their own acceptance thresholds based on their risk tolerance and use case. The protocol enforces no threshold. This separation of measurement from policy is deliberate — it allows the same underlying trust score to serve a bank's onboarding workflow, a procurement platform's vendor screening, and an automated decision system's counterparty evaluation, each with appropriate calibration.
 
@@ -212,7 +212,7 @@ PACT Protocol is at the specification and early build stage. The protocol specif
 
 **Live today:** domain connection via a single DNS record or OAuth-based onboarding; continuous ingestion of real DMARC aggregate reports; extraction and hashing of leaf data (domain, period, reporter, DKIM pass/fail counts, selectors, IP ranges); construction of the append-only Merkle tree; daily publication of the tree root to a public, append-only ledger; and a public, per-domain page showing the trust score, authentication history, and a Merkle inclusion proof recomputed live against the latest published root.
 
-**In active development, not yet live:** on-chain anchoring of the Merkle root to a public blockchain smart contract, so that root verification no longer requires trusting PACT's own infrastructure; the velocity signal described in Section 3.4; and PACT Signal, the infrastructure-discontinuity monitoring described in Section 5.3 and Section 7. None of these are required for the core trust score or the public verification page to function today — they extend what's already live.
+**In active development, not yet live:** on-chain anchoring of the Merkle root to a public blockchain smart contract, so that root verification no longer requires trusting PACT's own infrastructure; the velocity signal described in Section 3.3; and PACT Signal, the infrastructure-discontinuity monitoring described in Section 5.3 and Section 7. None of these are required for the core trust score or the public verification page to function today — they extend what's already live.
 
 Early adoption is expected to concentrate among domains with a specific, immediate incentive to be independently verifiable — entities operating under regulatory scrutiny, compliance-sensitive vendors, and organizations seeking to differentiate themselves from less established competitors. Broad adoption by default-trusted institutions follows once the protocol's verification value is established by precedent, not before.
 
