@@ -1,7 +1,7 @@
 # PACT Protocol
 ## Provenance Attestation and Chain of Trust
 
-**Version 1.0 — June 2026**  
+**Version 1.1 — July 2026**  
 **protocol@pbm-labs.com**
 
 ---
@@ -10,7 +10,7 @@
 
 Every institutional email sent anywhere in the world is automatically cryptographically signed. Every receiving mail server validates that signature and generates a structured report of the result. These reports have been produced continuously, at global scale, since 2011. They have never been captured, persisted, or chained.
 
-PACT is an open protocol that captures these reports, anchors them in an append-only Merkle tree on a public blockchain, and derives mathematically verifiable trust scores for institutional domains — without accessing, processing, or storing any message content, recipient identity, or personal data of any kind.
+PACT is an open protocol that captures these reports, anchors them in an append-only, publicly verifiable Merkle tree, and derives mathematically verifiable trust scores for institutional domains — without accessing, processing, or storing any message content, recipient identity, or personal data of any kind. On-chain publication of the Merkle root to a public blockchain, removing the need to trust PACT's own infrastructure entirely, is in active development (Section 8).
 
 The result is the first cryptographic record of institutional legitimacy built entirely from infrastructure that already exists, already operates, and requires no behavioral change from any sender or recipient.
 
@@ -52,13 +52,13 @@ For most domain operators, this is a single click through an OAuth-based onboard
 
 When an aggregate report arrives at PACT, the authentication metadata is extracted and committed as a cryptographic leaf in an append-only Merkle tree. The raw report is discarded immediately after extraction. Only the extracted signals — domain, period, pass and fail counts, selector and IP range identifiers — are preserved, in hashed form.
 
-Once daily, the Merkle root is published to a public blockchain in an immutable smart contract transaction. The record is permanent. It cannot be modified, backdated, or deleted.
+Once daily, the Merkle root is published to a public, append-only ledger. Every new root supersedes the last; none can be edited, backdated, or withdrawn once issued. Publishing that root to a public blockchain smart contract — removing the need to trust PACT's own infrastructure for that last step — is the protocol's next milestone, tracked in Section 8.
 
 ### 2.3 Independent Verification
 
-Any party can verify any domain's history at any time, without contacting PACT's operators. The verification requires only the public Merkle root on-chain and the inclusion proof for the leaf in question. The smart contract's verification function is open and callable by anyone. No API key, no subscription, no permission required.
+Any party can recompute any domain's Merkle inclusion proof directly from the published leaves and check it against the published root, without contacting PACT's operators or asking permission. No API key, no subscription required.
 
-This is not a design choice made for convenience. It is a design constraint made deliberately: a trust record that requires trusting its operator is not a trust record. PACT is verifiable by construction.
+This is not a design choice made for convenience. It is a design constraint made deliberately: a trust record that requires trusting its operator is not a trust record. Once root publication moves on-chain (Section 8), that verification will no longer require trusting PACT's infrastructure at all — only public, independently queryable state. PACT is designed to be verifiable by construction, and is built in that order: real data first, trustless anchoring next.
 
 ---
 
@@ -90,9 +90,9 @@ A pure maturity-weighted score penalizes legitimate new entities by construction
 
 The distortion exists because maturity collapses two distinct questions into one score: *has this domain existed long enough that its history could not have been fabricated* and *is this domain's current activity consistent with legitimate operation*. These are different questions with different answers for different entities.
 
-PACT addresses this by exposing velocity as an independent signal alongside maturity, rather than fusing both into a single opaque number. Velocity measures whether a domain's growth in volume and receiver diversity is gradual and broadly distributed — consistent with organic adoption — or sudden and concentrated, consistent with artificially manufactured traffic. A new domain with high volume, high diversity, and gradual, multi-receiver velocity is a different signal than a new domain with an abrupt, narrow spike in traffic from a small set of receivers. The first is consistent with a real, fast-growing institution. The second is consistent with manufactured history.
+The protocol's design addresses this by planning to expose velocity as an independent signal alongside maturity, rather than fusing both into a single opaque number. Velocity would measure whether a domain's growth in volume and receiver diversity is gradual and broadly distributed — consistent with organic adoption — or sudden and concentrated, consistent with artificially manufactured traffic. A new domain with high volume, high diversity, and gradual, multi-receiver velocity is a different signal than a new domain with an abrupt, narrow spike in traffic from a small set of receivers. The first is consistent with a real, fast-growing institution. The second is consistent with manufactured history.
 
-Applications consuming PACT are expected to read maturity and velocity together, not maturity alone. A young domain with strong velocity and strong diversity should not be treated identically to a young domain with neither. The protocol exposes both signals; it does not collapse them into a verdict.
+Once shipped, applications consuming PACT should read maturity and velocity together, not maturity alone — a young domain with strong velocity and strong diversity should not be treated identically to a young domain with neither. Velocity is on the near-term roadmap (Section 8) and is not yet part of the live score; today's score is volume, diversity, and maturity only.
 
 ### 3.3 Thresholds Are Policy, Not Protocol
 
@@ -114,7 +114,7 @@ The privacy guarantee is enforced by the data source, not by PACT's operators.
 
 Each entry in the Merkle tree commits to the sending domain, the reporting period, aggregate authentication counts, and hashed infrastructure identifiers. Every element is either already public information (domain names) or opaque (hashes that reveal nothing about their preimages to observers).
 
-The on-chain record proves that a domain was authenticated at a certain volume in a certain period. It reveals nothing about any message, any person, or any communication.
+The published record proves that a domain was authenticated at a certain volume in a certain period. It reveals nothing about any message, any person, or any communication.
 
 ### 4.3 Regulatory Posture
 
@@ -132,7 +132,7 @@ Maintaining authenticated institutional email requires a registered domain, DNS 
 
 The receiving mail servers — Gmail, Outlook, Yahoo, and hundreds of others — act as independent validators. They have no relationship with PACT, no incentive to coordinate, and no awareness that their reports are being used as evidence of anything beyond their immediate filtering function. Their aggregate reports are, in effect, an independent and uncoordinated consensus that a domain's authenticated email activity occurred exactly as recorded.
 
-PACT packages that consensus into an immutable on-chain record.
+PACT packages that consensus into an immutable, append-only public record, with on-chain anchoring as the next step toward removing trust in PACT's own infrastructure entirely (Section 8).
 
 ### 5.2 Why the Attack Fails
 
@@ -146,11 +146,11 @@ Proof of Operational Work defends against an attacker building fraudulent histor
 
 This is a meaningful distinction. A domain hijacker who gains control of `wise.com`'s DNS does not need to build trust — they inherit it. The protocol's default assumption, that current control of a domain's DNS implies legitimate continuity with its past, is true in the overwhelming majority of cases and false in exactly the cases that matter most.
 
-PACT addresses this by treating the trust score as continuously re-evaluated, not retroactively fixed. PACT Signal monitors each connected domain's sending infrastructure — IP ranges, DKIM selectors, receiver distribution — against its established baseline. A domain hijacking event almost always produces an observable infrastructure discontinuity: new selectors, unfamiliar sending ranges, or a receiver distribution inconsistent with the domain's history, often appearing abruptly rather than gradually.
+PACT's protocol design addresses this by treating the trust score as continuously re-evaluated, not retroactively fixed. The leaf schema already records the infrastructure identifiers this requires — DKIM selectors and IP ranges are committed per leaf today — precisely so that this defense can be built without a data migration. PACT Signal, the monitoring application described in Section 7, is designed to watch each connected domain's sending infrastructure against its established baseline. A domain hijacking event almost always produces an observable infrastructure discontinuity: new selectors, unfamiliar sending ranges, or a receiver distribution inconsistent with the domain's history, often appearing abruptly rather than gradually.
 
-When such a discontinuity is detected, the trust score does not continue to reflect the pre-existing history unconditionally. It is provisionally discounted until the new infrastructure pattern either stabilizes into a consistent, sustained baseline or is confirmed by the domain operator as an intentional, authorized change. Accumulated history establishes a prior. It does not grant indefinite, unconditional inheritance of trust independent of what the domain's infrastructure is doing today.
+When such a discontinuity is detected, the design calls for the trust score to stop reflecting the pre-existing history unconditionally — provisionally discounted until the new infrastructure pattern either stabilizes into a consistent, sustained baseline or is confirmed by the domain operator as an intentional, authorized change. Accumulated history is meant to establish a prior, not to grant indefinite, unconditional inheritance of trust independent of what the domain's infrastructure is doing today.
 
-This does not eliminate the risk entirely — no system that relies on DNS as its root of authority can. It ensures that hijacking a high-trust domain produces a visible signal rather than a silent, permanent transfer of reputation.
+This monitoring layer is on the roadmap and not yet live (Section 8) — the underlying data it needs is already being collected. Even once shipped, it will not eliminate the risk entirely; no system that relies on DNS as its root of authority can. The goal is that hijacking a high-trust domain produces a visible signal rather than a silent, permanent transfer of reputation.
 
 ---
 
@@ -184,7 +184,7 @@ The commercial endgame is the FICO model. The architectural endgame is something
 
 Decentralized identity systems have solved cryptographic ownership — anyone can generate a unique identifier whose control is provable. What they have not solved is the empty container problem: a fraudulent entity and a legitimate multinational have identical cryptographic validity on day one. There is no primitive that binds real-world operational history to a cryptographic identity without a trusted intermediary.
 
-PACT is that primitive. It converts the existing email authentication infrastructure into a Proof of Operational Work oracle: a verifiable record that a specific domain has been operating at scale in the real world, as independently certified by the global mail infrastructure, anchored permanently on-chain. This record can be consumed by any identity protocol, any smart contract, or any automated system that needs to answer the question of institutional legitimacy without trusting a centralized authority.
+PACT is that primitive. It converts the existing email authentication infrastructure into a Proof of Operational Work oracle: a verifiable record that a specific domain has been operating at scale in the real world, as independently certified by the global mail infrastructure, designed to be anchored permanently on-chain (Section 8). This record can be consumed by any identity protocol, any smart contract, or any automated system that needs to answer the question of institutional legitimacy without trusting a centralized authority.
 
 The architecture supports this extension. The protocol is designed so that its Merkle roots and trust scores can be consumed by any downstream system, on any chain, through any interface. The base layer is the trust record. What is built on top is open.
 
@@ -192,7 +192,7 @@ The architecture supports this extension. The protocol is designed so that its M
 
 ## 7. Ecosystem
 
-PACT Protocol is the base layer — open, freely implementable, and independent of any single operator for verification correctness. Any organization can verify the public Merkle tree against the on-chain roots without contacting the protocol's authors.
+PACT Protocol is the base layer — open, freely implementable, and independent of any single operator for verification correctness. Any organization can verify the public Merkle tree against the published roots without contacting the protocol's authors.
 
 Three applications are defined in the PACT ecosystem, each consuming the protocol as infrastructure:
 
@@ -210,14 +210,16 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 
 PACT Protocol is at the specification and early build stage. The protocol specification is open and freely available. Third-party implementations are encouraged.
 
-The reference implementation is in active development. The MVP milestone is a live public domain provenance page — trust score, authentication history, and independently verifiable Merkle proof — backed by real DMARC aggregate reports anchored on a public blockchain.
+**Live today:** domain connection via a single DNS record or OAuth-based onboarding; continuous ingestion of real DMARC aggregate reports; extraction and hashing of leaf data (domain, period, reporter, DKIM pass/fail counts, selectors, IP ranges); construction of the append-only Merkle tree; daily publication of the tree root to a public, append-only ledger; and a public, per-domain page showing the trust score, authentication history, and a Merkle inclusion proof recomputed live against the latest published root.
+
+**In active development, not yet live:** on-chain anchoring of the Merkle root to a public blockchain smart contract, so that root verification no longer requires trusting PACT's own infrastructure; the velocity signal described in Section 3.4; and PACT Signal, the infrastructure-discontinuity monitoring described in Section 5.3 and Section 7. None of these are required for the core trust score or the public verification page to function today — they extend what's already live.
 
 Early adoption is expected to concentrate among domains with a specific, immediate incentive to be independently verifiable — entities operating under regulatory scrutiny, compliance-sensitive vendors, and organizations seeking to differentiate themselves from less established competitors. Broad adoption by default-trusted institutions follows once the protocol's verification value is established by precedent, not before.
 
-The protocol is designed to evolve toward permissionless node operation. The initial reference implementation operates a single node; the architecture supports and anticipates multiple independent nodes. The on-chain verification function ensures that the correctness of any published root is independently verifiable regardless of who operates the publishing infrastructure.
+The protocol is designed to evolve toward permissionless node operation. The initial reference implementation operates a single node; the architecture supports and anticipates multiple independent nodes. Once root publication moves on-chain, the verification function will ensure that the correctness of any published root is independently verifiable regardless of who operates the publishing infrastructure.
 
 ---
 
 *PACT — Provenance Attestation and Chain of Trust*  
-*Whitepaper v1.0 — June 2026*  
+*Whitepaper v1.1 — July 2026*  
 *protocol@pbm-labs.com*
