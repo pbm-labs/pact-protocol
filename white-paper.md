@@ -2,7 +2,7 @@
 ## Provenance Attestation and Chain of Trust
 
 **Version 1.2 — August 2026**  
-**protocol@pbm-labs.com**
+**pact@pbm-labs.com**
 
 ---
 
@@ -215,4 +215,4 @@ The reference implementation is operated by [we build real](https://pact.pbm-lab
 
 *PACT — Provenance Attestation and Chain of Trust*  
 *Whitepaper v1.2 — August 2026*  
-*protocol@pbm-labs.com*
+*pact@pbm-labs.com*
