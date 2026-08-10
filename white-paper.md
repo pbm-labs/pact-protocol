@@ -1,7 +1,7 @@
 # PACT Protocol
 ## Provenance Attestation and Chain of Trust
 
-**Version 1.3 — August 2026**  
+**Version 1.4 — August 2026**  
 **pact@pbm-labs.com**
 
 ---
@@ -15,32 +15,6 @@ Every domain that sends mail already participates in a quiet, global verificatio
 PACT is an open protocol that captures those reports, commits them to an append-only Merkle tree anyone can recompute, and derives an organic trust signal from verified history. Domains join by pointing an existing DNS field at PACT. Nothing about how they send mail changes. No message is ever read.
 
 The public record leads with verified history — days independently confirmed — because early scores are still forming. A scaled trust score appears once that history is meaningful. On-chain publication of the Merkle root, so verification no longer depends on trusting PACT's operators, is the next milestone.
-
----
-
-## What Makes PACT Different
-
-Every existing way to prove a business is real shares the same flaw: it is an *authority's claim*, not *evidence*. A credit bureau's report, a state registry entry, a bank statement, a LinkedIn history — all of them ask you to trust that someone else verified correctly. None of them produce something a stranger can check for themselves, from first principles, without trusting a gatekeeper.
-
-That flaw used to be tolerable. It isn't anymore. Generative AI did not create a new threat — it removed the last thing that made faking these signals expensive. A ten-year-old domain, a five-year LinkedIn history, a convincing bank statement: all of it can now be fabricated cheaply. The authorities did not get worse. The cost of lying to them collapsed.
-
-PACT does not ask you to trust an authority. It asks you to check a public record.
-
-Every claim PACT makes is derived from independent receiving mail systems — Gmail, Outlook, Yahoo, and others — that have no relationship with each other, no incentive to coordinate, and no awareness they are being used as evidence. Their aggregate, uncoordinated agreement over time is the proof. Not because PACT says so. Because anyone can recompute the published leaves and inclusion proofs against the public append-only record, without asking PACT's permission. Anchoring that record so verification no longer depends on any single operator's infrastructure is the next protocol milestone — not a change of thesis.
-
-That is the property incumbent proofs cannot retrofit. A credit bureau cannot become trustless — its business model *is* the trusted intermediary. A government registry cannot become trustless — it is definitionally an authority. A bank statement cannot become trustless — it is a document, and documents can be edited. PACT is not a better version of these. It sits in a different category: evidence you can recheck, not a claim you must accept.
-
-Here is what makes that durable, not just different: **the history PACT measures cannot be manufactured after the fact, at any price — including by PACT's own operators.**
-
-You can buy an aged domain. You can fabricate a LinkedIn history. You can build a shell company with perfect paperwork. What you cannot do is make yesterday happen earlier. PACT's history is built from real time passing while independent third parties were watching. There is no shortcut through time. That is not a product preference. It is a physical constraint PACT puts to work.
-
-This is why PACT does not compete on cost or convenience today, and does not need to. Existing methods are cheap and instant *because* they are shallow enough to fake cheaply and instantly. PACT is slow to build *because* a well-funded, patient, AI-equipped adversary still cannot buy a past they did not live. The slowness is not a limitation waiting to be optimized away. It is the point.
-
-Every other proof of legitimacy answers: *what did someone claim, and who is vouching for it?*
-
-PACT answers a different question: *what actually happened, for how long, witnessed by how many independent parties who had no reason to lie?*
-
-That question has never had a durable public answer before. Starting now, it does.
 
 ---
 
@@ -240,5 +214,5 @@ The reference implementation is operated by [we build real](https://pact.pbm-lab
 ---
 
 *PACT — Provenance Attestation and Chain of Trust*  
-*Whitepaper v1.3 — August 2026*  
+*Whitepaper v1.4 — August 2026*  
 *pact@pbm-labs.com*
