@@ -192,14 +192,14 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 
 **Live today**
 
-- Domain connection via Cloudflare OAuth, manual DNS, or existing reporting tools (`/how-it-works`)
-- Automatic public-record creation on first valid aggregate report (manual / tool paths)
+- Domain connection via Cloudflare OAuth, manual DNS, or existing reporting tools (`/connect`)
+- Automatic public-record creation on connect (manual / tool paths) and continuous report ingestion
 - Continuous ingestion of real DMARC aggregate reports
 - Append-only Merkle tree with publicly recomputable inclusion proofs
 - Regular publication of staging roots to a public ledger
 - Public records ranked by verified history; scaled score when meaningful
 - Per-domain pages with clocks, activity, and technical verification
-- Public documentation hub at [pact.pbm-labs.com/docs](https://pact.pbm-labs.com/docs) — including a short note on [what makes PACT different](https://pact.pbm-labs.com/why-pact), this whitepaper, and the [live roadmap](https://pact.pbm-labs.com/roadmap)
+- Public documentation hub at [webuildreal.dev/docs](https://webuildreal.dev/docs) — including a short note on [what makes PACT different](https://webuildreal.dev/docs/why), this whitepaper, and the [live roadmap](https://webuildreal.dev/docs/roadmap)
 
 **In active development**
 
@@ -210,7 +210,7 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 
 None of the roadmap items are required for today's public verification to function. They extend what is already live. The public roadmap page tracks the same Now / Next split without duplicating the protocol specification.
 
-The reference implementation is operated by [we build real](https://pact.pbm-labs.com) / PBM Labs. The protocol specification and this whitepaper are public. Third-party implementations are encouraged.
+The reference implementation is operated by [we build real](https://webuildreal.dev) / PBM Labs. The protocol specification and this whitepaper are public. Third-party implementations are encouraged.
 
 ---
 
