@@ -193,7 +193,7 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 **Live today**
 
 - Domain connection via Cloudflare OAuth, manual DNS, or existing reporting tools (`/connect`)
-- Automatic public-record creation on connect (manual / tool paths) and continuous report ingestion
+- Automatic public-record creation on the first valid aggregate report (manual / tool paths) and continuous report ingestion
 - Continuous ingestion of real DMARC aggregate reports
 - Append-only Merkle tree with publicly recomputable inclusion proofs
 - Regular publication of staging roots to a public ledger
