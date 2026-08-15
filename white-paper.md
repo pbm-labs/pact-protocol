@@ -1,8 +1,8 @@
 # PACT Protocol
 ## Provenance Attestation and Chain of Trust
 
-**Version 1.5 — August 2026**  
-**pact@pbm-labs.com**
+**Version 1.6 — August 2026**  
+**hello@pbm-labs.com**
 
 ---
 
@@ -14,7 +14,7 @@ Every domain that sends mail already participates in a quiet, global verificatio
 
 PACT is an open protocol that captures those reports, commits them to an append-only Merkle tree anyone can recompute, and derives an organic trust signal from verified history. Domains join by pointing an existing DNS field at PACT. Nothing about how they send mail changes. No message is ever read.
 
-The public record leads with verified history — days independently confirmed — because early scores are still forming. A scaled trust score appears once that history is meaningful. On-chain publication of the Merkle root, so verification no longer depends on trusting PACT's operators, is the next milestone.
+The public record leads with verified history — days independently confirmed — because early scores are still forming. A scaled trust score appears as a technical verification detail once that history is meaningful. Merkle roots are published to a public blockchain so a verifier does not have to trust the operator's database for inclusion. Leaves stay off-chain: the chain attests inclusion, not availability.
 
 ---
 
@@ -56,13 +56,17 @@ Manual and tool-based paths do not require returning to the site to "confirm" th
 
 When a report arrives, authentication metadata is extracted and committed as a leaf in an append-only Merkle tree. The raw report is discarded after extraction. What remains is hashed signal: domain, period, pass and fail counts, selector and infrastructure identifiers, and the reporting organization.
 
-The tree root is published regularly to a public, append-only ledger. Roots supersede one another; none can be edited, backdated, or withdrawn once issued. Publishing that root to a public blockchain — so verification does not require trusting PACT's infrastructure — is the next protocol milestone (Section 8).
+The tree root is published to `PactRoots` — a minimal contract that records roots, leaf counts, and timestamps. Roots supersede one another; none can be edited, backdated, or withdrawn once issued. Anyone can call `getLatestRoot()` and recompute inclusion proofs against that root without asking PACT's operators.
+
+The contract does not store leaves. A verifier still needs the off-chain leaf data (and its Merkle path) to check a specific domain. The chain proves that a given root was published; it does not guarantee that leaf bytes remain available. Verifiers who rely on a proof should archive it.
+
+The first on-chain deployment is **Base Sepolia** (a public testnet), with a permissioned publisher. That is independently checkable. It is not Base mainnet, and it is not permissionless publication.
 
 ### 2.3 Independent Verification
 
-Anyone can recompute a domain's inclusion proof from the published leaves and check it against the published root, without permission, API keys, or operator involvement.
+Anyone can recompute a domain's inclusion proof from the published leaves and check it against the on-chain root, without permission, API keys, or operator involvement for the inclusion check itself.
 
-A trust record that requires trusting its operator is not a trust record. PACT is built in that order: real data and public proofs first; trustless root anchoring next.
+A trust record that requires trusting its operator for the root is not finished. PACT publishes the root on-chain so that check no longer depends on the operator's database. Remaining operator trust is narrower: leaf availability, a permissioned publisher key, and report-source authentication that is still allowlist-based rather than a cryptographic witness of Gmail/Outlook mail (DKIM of the reporter wrapper). Those are honest limits, not hidden ones.
 
 ---
 
@@ -104,7 +108,7 @@ Status thresholds:
 
 Raw `T` is correct and not legible on its own. Early domains with different histories can collapse to the same tiny display number if forced onto a 0–100 gauge too soon.
 
-The public interface therefore leads with **verified history** — days independently confirmed, reports, and reporting organizations — and introduces a scaled 0–100 display only once the raw signal leaves the compressed early band (or reaches Proven). Progress toward the next interpretation band can be estimated without changing the formula.
+The public interface therefore leads with **verified history** — days independently confirmed, reports, and reporting organizations — and treats the scaled 0–100 display as technical verification, introduced once the raw signal leaves the compressed early band (or reaches Proven). Progress toward the next interpretation band can be estimated without changing the formula.
 
 The formula and the display layer are separate (`pact-score-0.1` vs `pact-display-0.1`). Changing how people see the score must never rewrite what was measured.
 
@@ -127,6 +131,8 @@ PACT never accesses, processes, transmits, or stores message content, subject li
 Each leaf commits to the sending domain, reporting period, aggregate authentication counts, and hashed infrastructure identifiers. Domain names are already public. Hashes reveal nothing useful about their preimages to casual observers.
 
 The record proves that a domain was confirmed at a certain volume in a certain period. It reveals nothing about any message or any person.
+
+On-chain, only Merkle roots, leaf counts, and timestamps are stored.
 
 ### 4.3 Regulatory Posture
 
@@ -196,24 +202,26 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 - Automatic public-record creation on the first valid aggregate report (manual / tool paths) and continuous report ingestion
 - Continuous ingestion of real DMARC aggregate reports
 - Append-only Merkle tree with publicly recomputable inclusion proofs
-- Regular publication of staging roots to a public ledger
-- Public records ranked by verified history; scaled score when meaningful
+- Merkle roots published to `PactRoots` on Base Sepolia (testnet; permissioned publisher)
+- Off-chain leaf availability via a public HTTP API (Cloudflare D1)
+- Public records ranked by verified history; scaled score as technical verification when meaningful
 - Per-domain pages with clocks, activity, and technical verification
-- Public documentation hub at [webuildreal.dev/docs](https://webuildreal.dev/docs) — including a short note on [what makes PACT different](https://webuildreal.dev/docs/why), this whitepaper, and the [live roadmap](https://webuildreal.dev/docs/roadmap)
+- Public documentation hub at [webuildreal.dev/docs](https://webuildreal.dev/docs) — including a short note on [what makes PACT different](https://webuildreal.dev/docs/why), this whitepaper, the [live roadmap](https://webuildreal.dev/docs/roadmap), and the [protocol specification](https://github.com/pbm-labs/pact/blob/main/docs/pact_protocol.md)
 
 **In active development**
 
-- On-chain anchoring of Merkle roots
+- Base mainnet for `PactRoots`
+- Cryptographic witness of reporter mail (DKIM of Gmail/Microsoft wrappers) — not yet live
 - Velocity as a companion signal to maturity
 - Infrastructure-discontinuity monitoring (Signal)
-- Broader multi-node / permissionless operation
+- Broader multi-node / permissionless publication
 
-None of the roadmap items are required for today's public verification to function. They extend what is already live. The public roadmap page tracks the same Now / Next split without duplicating the protocol specification.
+None of the remaining roadmap items are required for today's public verification to function. They shrink remaining operator trust. The public roadmap page tracks the same Now / Next split without duplicating the protocol specification.
 
-The reference implementation is operated by [we build real](https://webuildreal.dev) / PBM Labs. The protocol specification and this whitepaper are public. Third-party implementations are encouraged.
+The reference implementation is operated under [we build real](https://webuildreal.dev) — the movement. PACT is an open protocol. PBM Labs LLC provides the first reference implementation. The protocol specification and this whitepaper are public. Third-party implementations are encouraged.
 
 ---
 
 *PACT — Provenance Attestation and Chain of Trust*  
-*Whitepaper v1.5 — August 2026*  
-*pact@pbm-labs.com*
+*Whitepaper v1.6 — August 2026*  
+*hello@pbm-labs.com*
