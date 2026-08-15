@@ -1,7 +1,7 @@
 # PACT Protocol
 ## Provenance Attestation and Chain of Trust
 
-**Version 1.6 — August 2026**  
+**Version 1.7 — August 2026**  
 **hello@pbm-labs.com**
 
 ---
@@ -66,7 +66,7 @@ The first on-chain deployment is **Base Sepolia** (a public testnet), with a per
 
 Anyone can recompute a domain's inclusion proof from the published leaves and check it against the on-chain root, without permission, API keys, or operator involvement for the inclusion check itself.
 
-A trust record that requires trusting its operator for the root is not finished. PACT publishes the root on-chain so that check no longer depends on the operator's database. Remaining operator trust is narrower: leaf availability, a permissioned publisher key, and report-source authentication that is still allowlist-based rather than a cryptographic witness of Gmail/Outlook mail (DKIM of the reporter wrapper). Those are honest limits, not hidden ones.
+A trust record that requires trusting its operator for the root is not finished. PACT publishes the root on-chain so that check no longer depends on the operator's database. Remaining operator trust is narrower: leaf availability, a permissioned publisher key, and that the reference implementation does not independently SPF-check the connecting MTA (Cloudflare Email Routing accepted the hop). Report-source authentication requires a passing DKIM signature on the reporter's wrapper mail whose `d=` is an allowlisted reporter or forwarding agent. Those are honest limits, not hidden ones.
 
 ---
 
@@ -206,12 +206,12 @@ The protocol boundary is absolute: PACT Protocol never crosses into message-leve
 - Off-chain leaf availability via a public HTTP API (Cloudflare D1)
 - Public records ranked by verified history; scaled score as technical verification when meaningful
 - Per-domain pages with clocks, activity, and technical verification
+- Cryptographic witness of reporter mail: DKIM-verify of Gmail/Microsoft/Yahoo/Apple wrappers (and allowlisted forwarding agents)
 - Public documentation hub at [webuildreal.dev/docs](https://webuildreal.dev/docs) — including a short note on [what makes PACT different](https://webuildreal.dev/docs/why), this whitepaper, the [live roadmap](https://webuildreal.dev/docs/roadmap), and the [protocol specification](https://github.com/pbm-labs/pact/blob/main/docs/pact_protocol.md)
 
 **In active development**
 
 - Base mainnet for `PactRoots`
-- Cryptographic witness of reporter mail (DKIM of Gmail/Microsoft wrappers) — not yet live
 - Velocity as a companion signal to maturity
 - Infrastructure-discontinuity monitoring (Signal)
 - Broader multi-node / permissionless publication
@@ -223,5 +223,5 @@ The reference implementation is operated under [we build real](https://webuildre
 ---
 
 *PACT — Provenance Attestation and Chain of Trust*  
-*Whitepaper v1.6 — August 2026*  
+*Whitepaper v1.7 — August 2026*  
 *hello@pbm-labs.com*
